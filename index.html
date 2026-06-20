@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACROZELA COMMUNITY APPOINTMENT | Professional Appointment Builder</title>
+    <meta name="description" content="ACROZELA Community Appointment Tool - Professional booking management with Indian Currency support and automated WhatsApp notifications.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-main); line-height: 1.6; }
+
+        header {
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--primary);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 { font-weight: 800; letter-spacing: 1px; color: var(--primary); font-size: 1.5rem; }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: #fff;
+            padding: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav button {
+            padding: 10px 15px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--secondary);
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        nav button.active { background: var(--primary); color: white; }
+
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px 100px 15px; }
+
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        h2 { margin-bottom: 15px; font-size: 1.2rem; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.85rem; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            background: #fff;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .appointment-list { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 600px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); }
+        th { background: #f1f5f9; color: var(--secondary); text-transform: uppercase; }
+
+        footer {
+            background: #fff;
+            padding: 40px 15px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        .footer-title { font-weight: 800; color: var(--primary); margin-bottom: 5px; font-size: 1.1rem; }
+        .developed-by { font-weight: 700; margin-top: 10px; letter-spacing: 1.5px; color: #000; font-size: 0.9rem; }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.1rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ACROZELA COMMUNITY APPOINTMENT</h1>
+</header>
+
+<nav>
+    <button onclick="showSection('dashboard')" id="btn-dashboard" class="active">DASHBOARD</button>
+    <button onclick="showSection('booking')" id="btn-booking">NEW BOOKING</button>
+    <button onclick="showSection('settings')" id="btn-settings">SETTINGS</button>
+</nav>
+
+<div class="container">
+    
+    <!-- Dashboard -->
+    <section id="dashboard" class="section active">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span style="font-size: 0.8rem; color: var(--secondary);">TOTAL BOOKINGS</span><br>
+                <strong id="stat-count" style="font-size: 1.5rem;">0</strong>
+            </div>
+            <div class="stat-card">
+                <span style="font-size: 0.8rem; color: var(--secondary);">TOTAL REVENUE</span><br>
+                <strong id="stat-revenue" style="font-size: 1.5rem;">₹ 0</strong>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>RECENT APPOINTMENTS</h2>
+            <div class="appointment-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>CLIENT</th>
+                            <th>SERVICE</th>
+                            <th>ADDRESS</th>
+                            <th>FEE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointment-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking -->
+    <section id="booking" class="section">
+        <div class="card">
+            <h2>BOOK NEW APPOINTMENT</h2>
+            <form id="appointmentForm">
+                <div class="form-group">
+                    <label>CLIENT NAME</label>
+                    <input type="text" id="clientName" placeholder="ENTER FULL NAME" required>
+                </div>
+                <div class="form-group">
+                    <label>CLIENT ADDRESS</label>
+                    <input type="text" id="clientAddress" placeholder="ENTER FULL ADDRESS" required>
+                </div>
+                <div class="form-group">
+                    <label>WHATSAPP NUMBER</label>
+                    <input type="tel" id="clientPhone" placeholder="10 DIGIT NUMBER" required>
+                </div>
+                <div class="form-group">
+                    <label>SERVICE TYPE (SELECT FROM 30 SERVICES)</label>
+                    <select id="serviceType" required>
+                        <option value="">-- SELECT SERVICE --</option>
+                        <option value="General Consultation">GENERAL CONSULTATION</option>
+                        <option value="Document Verification">DOCUMENT VERIFICATION</option>
+                        <option value="Legal Advisory">LEGAL ADVISORY</option>
+                        <option value="Tax & GST Filing">TAX & GST FILING</option>
+                        <option value="Health Checkup">HEALTH CHECKUP</option>
+                        <option value="Community Support">COMMUNITY SUPPORT</option>
+                        <option value="Property Valuation">PROPERTY VALUATION</option>
+                        <option value="Insurance Assistance">INSURANCE ASSISTANCE</option>
+                        <option value="Adhaar Card Service">ADHAAR CARD SERVICE</option>
+                        <option value="PAN Card Application">PAN CARD APPLICATION</option>
+                        <option value="Voter ID Support">VOTER ID SUPPORT</option>
+                        <option value="Passport Assistance">PASSPORT ASSISTANCE</option>
+                        <option value="Ration Card Service">RATION CARD SERVICE</option>
+                        <option value="Marriage Registration">MARRIAGE REGISTRATION</option>
+                        <option value="Birth Certificate">BIRTH CERTIFICATE</option>
+                        <option value="Death Certificate">DEATH CERTIFICATE</option>
+                        <option value="Pension Processing">PENSION PROCESSING</option>
+                        <option value="Trade License">TRADE LICENSE</option>
+                        <option value="FSSAI Registration">FSSAI REGISTRATION</option>
+                        <option value="Digital Signature">DIGITAL SIGNATURE</option>
+                        <option value="Bank Account Help">BANK ACCOUNT HELP</option>
+                        <option value="Utility Bill Payment">UTILITY BILL PAYMENT</option>
+                        <option value="Educational Counseling">EDUCATIONAL COUNSELING</option>
+                        <option value="Employment Registration">EMPLOYMENT REGISTRATION</option>
+                        <option value="Skill Training">SKILL TRAINING</option>
+                        <option value="Senior Citizen Help">SENIOR CITIZEN HELP</option>
+                        <option value="Income Certificate">INCOME CERTIFICATE</option>
+                        <option value="Caste Certificate">CASTE CERTIFICATE</option>
+                        <option value="Domain & Web Setup">DOMAIN & WEB SETUP</option>
+                        <option value="Technical Support">TECHNICAL SUPPORT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>FEES (₹)</label>
+                    <input type="number" id="serviceFee" placeholder="AMOUNT IN INR" required>
+                </div>
+                <button type="submit" class="btn-full">SAVE & SEND WHATSAPP</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Settings -->
+    <section id="settings" class="section">
+        <div class="card">
+            <h2>OFFICE PROFILE SETTINGS</h2>
+            <div class="form-group">
+                <label>OWNER NAME</label>
+                <input type="text" id="setOwner" placeholder="ENTER OWNER NAME">
+            </div>
+            <div class="form-group">
+                <label>APPOINTMENT STAFF</label>
+                <input type="text" id="setStaff" placeholder="ENTER STAFF NAME">
+            </div>
+            <div class="form-group">
+                <label>OFFICE PHONE NO</label>
+                <input type="tel" id="setPhone" placeholder="ENTER OFFICE PHONE">
+            </div>
+            <div class="form-group">
+                <label>OFFICE ADDRESS</label>
+                <textarea id="setAddress" rows="2" placeholder="ENTER OFFICE ADDRESS"></textarea>
+            </div>
+            <button class="btn-full" onclick="saveSettings()">SAVE SETTINGS</button>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <div class="footer-title">ACROZELA COMMUNITY APPOINTMENT HUB</div>
+    <div class="developed-by">DEVELOPED BY ACROZELA TECH</div>
+</footer>
+
+<script>
+    let appointments = JSON.parse(localStorage.getItem('acro_data_hub')) || [];
+    let settings = JSON.parse(localStorage.getItem('acro_conf_hub')) || {
+        owner: '', staff: '', phone: '', address: ''
+    };
+
+    window.onload = () => {
+        loadSettings();
+        updateDashboard();
+        renderTable();
+    };
+
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.getElementById('btn-' + id).classList.add('active');
+    }
+
+    function saveSettings() {
+        settings.owner = document.getElementById('setOwner').value.toUpperCase();
+        settings.staff = document.getElementById('setStaff').value.toUpperCase();
+        settings.phone = document.getElementById('setPhone').value;
+        settings.address = document.getElementById('setAddress').value.toUpperCase();
+        localStorage.setItem('acro_conf_hub', JSON.stringify(settings));
+        alert('SETTINGS SAVED');
+    }
+
+    function loadSettings() {
+        document.getElementById('setOwner').value = settings.owner;
+        document.getElementById('setStaff').value = settings.staff;
+        document.getElementById('setPhone').value = settings.phone;
+        document.getElementById('setAddress').value = settings.address;
+    }
+
+    function generateID() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const day = String(d.getDate()).padStart(2, '0');
+        const count = String(appointments.length + 1).padStart(4, '0');
+        return `${year}${day}${count}`;
+    }
+
+    document.getElementById('appointmentForm').onsubmit = function(e) {
+        e.preventDefault();
+        
+        const bookingID = generateID();
+        const appt = {
+            id: bookingID,
+            name: document.getElementById('clientName').value.toUpperCase(),
+            address: document.getElementById('clientAddress').value.toUpperCase(),
+            phone: document.getElementById('clientPhone').value,
+            service: document.getElementById('serviceType').value.toUpperCase(),
+            fee: document.getElementById('serviceFee').value,
+            date: new Date().toLocaleDateString()
+        };
+
+        appointments.push(appt);
+        localStorage.setItem('acro_data_hub', JSON.stringify(appointments));
+
+        const msg = `*ACROZELA APPOINTMENT*%0A` +
+                    `*ID:* ${appt.id}%0A` +
+                    `*CLIENT:* ${appt.name}%0A` +
+                    `*ADDR:* ${appt.address}%0A` +
+                    `*SERVICE:* ${appt.service}%0A` +
+                    `*FEE:* ₹${appt.fee}%0A` +
+                    `*STAFF:* ${settings.staff}%0A` +
+                    `-----------------------%0A` +
+                    `*OFFICE:* ${settings.address}`;
+
+        window.open(`https://wa.me/91${appt.phone}?text=${msg}`, '_blank');
+        
+        this.reset();
+        updateDashboard();
+        renderTable();
+        showSection('dashboard');
+    };
+
+    function updateDashboard() {
+        document.getElementById('stat-count').innerText = appointments.length;
+        const total = appointments.reduce((sum, i) => sum + parseFloat(i.fee), 0);
+        document.getElementById('stat-revenue').innerText = `₹ ${total.toLocaleString('en-IN')}`;
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('appointment-table-body');
+        tbody.innerHTML = '';
+        const recent = appointments.slice().reverse().slice(0, 10);
+        
+        if(recent.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center">NO DATA</td></tr>';
+            return;
+        }
+
+        recent.forEach(a => {
+            tbody.innerHTML += `<tr>
+                <td>${a.id}</td>
+                <td>${a.name}</td>
+                <td>${a.service}</td>
+                <td>${a.address}</td>
+                <td>₹${a.fee}</td>
+            </tr>`;
+        });
+    }
+</script>
+
+</body>
+</html>
